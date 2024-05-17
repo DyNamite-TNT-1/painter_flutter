@@ -1,22 +1,22 @@
 part of 'flutter_painter.dart';
 
 /// Flutter widget to detect user input and request drawing [FreeStyleDrawable]s.
-class _FreeStyleWidget extends StatefulWidget {
+class FreeStyleWidget extends StatefulWidget {
   /// Child widget.
   final Widget child;
 
-  /// Creates a [_FreeStyleWidget] with the given [controller], [child] widget.
-  const _FreeStyleWidget({
-    Key? key,
+  /// Creates a [FreeStyleWidget] with the given [controller], [child] widget.
+  const FreeStyleWidget({
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
-  _FreeStyleWidgetState createState() => _FreeStyleWidgetState();
+  FreeStyleWidgetState createState() => FreeStyleWidgetState();
 }
 
 /// State class
-class _FreeStyleWidgetState extends State<_FreeStyleWidget> {
+class FreeStyleWidgetState extends State<FreeStyleWidget> {
   /// The current drawable being drawn.
   PathDrawable? drawable;
 

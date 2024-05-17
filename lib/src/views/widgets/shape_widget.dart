@@ -1,21 +1,21 @@
 part of 'flutter_painter.dart';
 
 /// Flutter widget to draw shapes.
-class _ShapeWidget extends StatefulWidget {
+class ShapeWidget extends StatefulWidget {
   /// Child widget.
   final Widget child;
 
-  /// Creates a [_ShapeWidget] with the given [controller], [child] widget.
-  const _ShapeWidget({
-    Key? key,
+  /// Creates a [ShapeWidget] with the given [controller], [child] widget.
+  const ShapeWidget({
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
-  _ShapeWidgetState createState() => _ShapeWidgetState();
+  ShapeWidgetState createState() => ShapeWidgetState();
 }
 
-class _ShapeWidgetState extends State<_ShapeWidget> {
+class ShapeWidgetState extends State<ShapeWidget> {
   /// The shape that is being currently drawn.
   ShapeDrawable? currentShapeDrawable;
 

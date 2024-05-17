@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'dart:ui' as ui;
-
 import 'home_page.dart';
 
 void main() {

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -88,8 +89,9 @@ class _MyHomePageState extends State<MyHomePage> {
   /// to use it as a background
   void initBackground() async {
     // Extension getter (.image) to get [ui.Image] from [ImageProvider]
-    final image =
-        await const NetworkImage('https://picsum.photos/1920/1080/').image;
+    // final image =
+    //     await const NetworkImage('https://picsum.photos/1920/1080/').image;
+    final image = await createWhiteImage(1000, 1000);
 
     setState(() {
       backgroundImage = image;
@@ -100,6 +102,27 @@ class _MyHomePageState extends State<MyHomePage> {
   /// Updates UI when the focus changes
   void onFocus() {
     setState(() {});
+  }
+
+  Future<ui.Image> createWhiteImage(double width, double height) async {
+    // const int width = 50;
+    // const int height = 50;
+    final int size = (width * height * 4).toInt(); // 4 bytes per pixel (RGBA)
+    final Uint8List pixels = Uint8List(size)
+      ..fillRange(0, size, 0xFF); // Fill with white (0xFF = 255)
+    final Completer<ui.Image> completer = Completer<ui.Image>();
+
+    ui.decodeImageFromPixels(
+      pixels,
+      width.toInt(),
+      height.toInt(),
+      ui.PixelFormat.rgba8888,
+      (ui.Image image) {
+        completer.complete(image);
+      },
+    );
+
+    return await completer.future;
   }
 
   Widget buildDefault(BuildContext context) {
@@ -183,7 +206,6 @@ class _MyHomePageState extends State<MyHomePage> {
               child: ValueListenableBuilder(
                 valueListenable: controller,
                 builder: (context, _, __) {
-                  print('controller.freeStyleMode ${controller.freeStyleMode}');
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

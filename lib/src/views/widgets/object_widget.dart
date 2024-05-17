@@ -1,7 +1,7 @@
 part of 'flutter_painter.dart';
 
 /// Flutter widget to move, scale and rotate [ObjectDrawable]s.
-class _ObjectWidget extends StatefulWidget {
+class ObjectWidget extends StatefulWidget {
   /// Child widget.
   final Widget child;
 
@@ -10,18 +10,18 @@ class _ObjectWidget extends StatefulWidget {
   /// If `false`, objects won't be movable, scalable or rotatable.
   final bool interactionEnabled;
 
-  /// Creates a [_ObjectWidget] with the given [controller], [child] widget.
-  const _ObjectWidget({
-    Key? key,
+  /// Creates a [ObjectWidget] with the given [controller], [child] widget.
+  const ObjectWidget({
+    super.key,
     required this.child,
     this.interactionEnabled = true,
-  }) : super(key: key);
+  });
 
   @override
-  _ObjectWidgetState createState() => _ObjectWidgetState();
+  ObjectWidgetState createState() => ObjectWidgetState();
 }
 
-class _ObjectWidgetState extends State<_ObjectWidget> {
+class ObjectWidgetState extends State<ObjectWidget> {
   static Set<double> assistAngles = <double>{
     0,
     pi / 4,
@@ -104,7 +104,7 @@ class _ObjectWidgetState extends State<_ObjectWidget> {
     super.initState();
 
     // Listen to the stream of events from the paint controller
-    WidgetsBinding.instance?.addPostFrameCallback((timestamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timestamp) {
       controllerEventSubscription =
           PainterController.of(context).events.listen((event) {
         // When an [RemoveDrawableEvent] event is received and removed drawable is the selected object
@@ -144,13 +144,17 @@ class _ObjectWidgetState extends State<_ObjectWidget> {
       return Stack(
         children: [
           Positioned.fill(
-              child: GestureDetector(
-                  onTap: onBackgroundTapped, child: widget.child)),
+            child: GestureDetector(
+              onTap: onBackgroundTapped,
+              child: widget.child,
+            ),
+          ),
           ...drawables.asMap().entries.map((entry) {
             final drawable = entry.value;
             final selected = drawable == controller?.selectedObjectDrawable;
             final size = drawable.getSize(maxWidth: constraints.maxWidth);
-            final widget = Padding(
+            final widget = Container(
+              // color: Colors.black54,
               padding: EdgeInsets.all(objectPadding),
               child: SizedBox(
                 width: size.width,
@@ -197,37 +201,42 @@ class _ObjectWidgetState extends State<_ObjectWidget> {
                                               (controlsSize / 2),
                                           child: Builder(
                                             builder: (context) {
-                                              if (usingHtmlRenderer) {
+                                              /// IOS issue: [BorderBoxShadow] does not work as expected
+                                              if (Platform.isIOS ||
+                                                  usingHtmlRenderer) {
                                                 return Container(
                                                   decoration: BoxDecoration(
                                                     border: Border.all(
-                                                        color: Colors.black,
-                                                        width:
-                                                            selectedBorderWidth),
+                                                      color: Colors.black,
+                                                      width:
+                                                          selectedBorderWidth,
+                                                    ),
                                                   ),
                                                   child: Container(
                                                     decoration: BoxDecoration(
                                                       border: Border.all(
-                                                          color: Colors.white,
-                                                          width:
-                                                              selectedBorderWidth),
+                                                        color: Colors.white,
+                                                        width:
+                                                            selectedBorderWidth,
+                                                      ),
                                                     ),
                                                   ),
                                                 );
                                               }
                                               return Container(
                                                 decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors.white,
-                                                        width:
-                                                            selectedBorderWidth),
-                                                    boxShadow: [
-                                                      BorderBoxShadow(
-                                                        color: Colors.black,
-                                                        blurRadius:
-                                                            selectedBlurRadius,
-                                                      )
-                                                    ]),
+                                                  border: Border.all(
+                                                      color: Colors.white,
+                                                      width:
+                                                          selectedBorderWidth),
+                                                  boxShadow: [
+                                                    BorderBoxShadow(
+                                                      color: Colors.black,
+                                                      blurRadius:
+                                                          selectedBlurRadius,
+                                                    ),
+                                                  ],
+                                                ),
                                               );
                                             },
                                           ),
@@ -256,7 +265,7 @@ class _ObjectWidgetState extends State<_ObjectWidget> {
                                                 onPanEnd: (details) =>
                                                     onScaleControlPanEnd(
                                                         0, entry, details),
-                                                child: _ObjectControlBox(
+                                                child: ObjectControlBox(
                                                   active:
                                                       controlsAreActive[0] ??
                                                           false,
@@ -287,7 +296,7 @@ class _ObjectWidgetState extends State<_ObjectWidget> {
                                                 onPanEnd: (details) =>
                                                     onScaleControlPanEnd(
                                                         1, entry, details),
-                                                child: _ObjectControlBox(
+                                                child: ObjectControlBox(
                                                   active:
                                                       controlsAreActive[1] ??
                                                           false,
@@ -316,7 +325,7 @@ class _ObjectWidgetState extends State<_ObjectWidget> {
                                                 onPanEnd: (details) =>
                                                     onRotationControlPanEnd(
                                                         2, entry, details),
-                                                child: _ObjectControlBox(
+                                                child: ObjectControlBox(
                                                   shape: BoxShape.circle,
                                                   active:
                                                       controlsAreActive[2] ??
@@ -348,7 +357,7 @@ class _ObjectWidgetState extends State<_ObjectWidget> {
                                                 onPanEnd: (details) =>
                                                     onScaleControlPanEnd(
                                                         3, entry, details),
-                                                child: _ObjectControlBox(
+                                                child: ObjectControlBox(
                                                   active:
                                                       controlsAreActive[3] ??
                                                           false,
@@ -382,7 +391,7 @@ class _ObjectWidgetState extends State<_ObjectWidget> {
                                                 onPanEnd: (details) =>
                                                     onResizeControlPanEnd(
                                                         4, entry, details),
-                                                child: _ObjectControlBox(
+                                                child: ObjectControlBox(
                                                   active:
                                                       controlsAreActive[4] ??
                                                           false,
@@ -415,7 +424,7 @@ class _ObjectWidgetState extends State<_ObjectWidget> {
                                                 onPanEnd: (details) =>
                                                     onResizeControlPanEnd(
                                                         5, entry, details),
-                                                child: _ObjectControlBox(
+                                                child: ObjectControlBox(
                                                   active:
                                                       controlsAreActive[5] ??
                                                           false,
@@ -448,7 +457,7 @@ class _ObjectWidgetState extends State<_ObjectWidget> {
                                                 onPanEnd: (details) =>
                                                     onResizeControlPanEnd(
                                                         6, entry, details),
-                                                child: _ObjectControlBox(
+                                                child: ObjectControlBox(
                                                   active:
                                                       controlsAreActive[6] ??
                                                           false,
@@ -481,7 +490,7 @@ class _ObjectWidgetState extends State<_ObjectWidget> {
                                                 onPanEnd: (details) =>
                                                     onResizeControlPanEnd(
                                                         7, entry, details),
-                                                child: _ObjectControlBox(
+                                                child: ObjectControlBox(
                                                   active:
                                                       controlsAreActive[7] ??
                                                           false,
@@ -489,7 +498,7 @@ class _ObjectWidgetState extends State<_ObjectWidget> {
                                               ),
                                             ),
                                           ),
-                                        ]
+                                        ],
                                       ],
                                     )
                                   : widget,
@@ -514,28 +523,6 @@ class _ObjectWidgetState extends State<_ObjectWidget> {
               ),
             );
           }),
-          // if(selectedDrawableIndex != null)
-          //   ...[
-          //     Positioned(
-          //
-          //       child: Container(
-          //         decoration: BoxDecoration(
-          //             border:  Border.all(
-          //               color: Colors.white,
-          //               width: 2,
-          //             ),
-          //             boxShadow: [
-          //               BorderBoxShadow(
-          //                 color: Colors.black,
-          //                 blurRadius: 1,
-          //               )
-          //             ]
-          //         ),
-          //         width: size.width,
-          //         height: size.height,
-          //       ),
-          //     )
-          //   ]
         ],
       );
     });
@@ -1017,17 +1004,17 @@ class _ObjectWidgetState extends State<_ObjectWidget> {
   /// A callback that is called when a transformation occurs in the [InteractiveViewer] in the widget tree.
   void onTransformUpdated() {
     setState(() {
-      final _m4storage =
+      final m4storage =
           PainterController.of(context).transformationController.value;
-      transformationScale = math.sqrt(_m4storage[8] * _m4storage[8] +
-          _m4storage[9] * _m4storage[9] +
-          _m4storage[10] * _m4storage[10]);
+      transformationScale = math.sqrt(m4storage[8] * m4storage[8] +
+          m4storage[9] * m4storage[9] +
+          m4storage[10] * m4storage[10]);
     });
   }
 }
 
 /// The control box container (only the UI, no logic).
-class _ObjectControlBox extends StatelessWidget {
+class ObjectControlBox extends StatelessWidget {
   /// Shape of the control box.
   final BoxShape shape;
 
@@ -1046,17 +1033,17 @@ class _ObjectControlBox extends StatelessWidget {
   /// Defaults to [Colors.black].
   final Color shadowColor;
 
-  /// Creates an [_ObjectControlBox] with the given [shape] and [active].
+  /// Creates an [ObjectControlBox] with the given [shape] and [active].
   ///
   /// By default, it will be a [BoxShape.rectangle] shape and not active.
-  const _ObjectControlBox({
-    Key? key,
+  const ObjectControlBox({
+    super.key,
     this.shape = BoxShape.rectangle,
     this.active = false,
     this.inactiveColor = Colors.white,
     this.activeColor,
     this.shadowColor = Colors.black,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1065,7 +1052,7 @@ class _ObjectControlBox extends StatelessWidget {
     final activeColor =
         this.activeColor ?? theme?.colorScheme.secondary ?? Colors.blue;
     return AnimatedContainer(
-      duration: _ObjectWidgetState.controlsTransitionDuration,
+      duration: ObjectWidgetState.controlsTransitionDuration,
       decoration: BoxDecoration(
         color: active ? activeColor : inactiveColor,
         shape: shape,
